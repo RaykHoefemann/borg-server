@@ -1,6 +1,6 @@
 # borg-server
 
-Container for a BorgBackup server based on Debian.
+Podman-Container for a BorgBackup server based on Debian and Fedora CoreOS as host.
 
 ## Features
 
