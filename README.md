@@ -28,13 +28,13 @@ Example:
 
 ```bash id="fkl4sm"
 podman run \
-  --name=borgbackup \
+  --name=borgserver \
   --rm \
-  -e PUID=1000 \
-  -e PGID=1000 \
+  -e PUID=1111 \
+  -e PGID=1111 \
   --publish=2222:22 \
   --volume=$HOME/containers/borgbackup/config:/config:Z \
-  --volume=/var/mnt/extern1/borgbackup:/repo:Z \
+  --volume=$Home/containers/borgbackup/repo:/repo:Z \
   --volume=$HOME/containers/borgbackup/log:/log:Z \
   --volume=$HOME/containers/borgbackup/data:/data:Z \
   ghcr.io/raykhoefemann/borg-server:0.1
