@@ -28,7 +28,7 @@ Example:
 
 ```bash id="fkl4sm"
 podman run \
-  --name=borgserver \
+  --name=borg-server \
   --rm \
   -e PUID=1111 \
   -e PGID=1111 \
