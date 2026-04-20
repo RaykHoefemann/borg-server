@@ -1,13 +1,54 @@
-This scripts helps you to manage this backup server.
+# Backup Server Management Scripts
 
-00-ssh-create_user.sh
-01-ssh-set-user-key.sh
-02-ssh-delete-user.sh
-09-ssh-list-user.sh
+This collection of scripts helps you manage your backup server.
+The scripts are organized by functionality for easier usage and maintenance.
 
-10-service-install.sh
+---
 
-20-container-start.sh
-21-container-stop.sh
-23-container-restart.sh
-29-container-status.sh
+## 🔐 SSH User Management
+
+Scripts for managing SSH access:
+
+* `00-ssh-create_user.sh`
+  Creates a new user
+
+* `01-ssh-set-user-key.sh`
+  Sets or updates a user's SSH key
+
+* `02-ssh-delete-user.sh`
+  Deletes an existing user
+
+* `09-ssh-list-user.sh`
+  Lists all existing users
+
+---
+
+## ⚙️ Service Installation
+
+* `10-service-install.sh`
+  Installs required services on the server
+
+---
+
+## 📦 Container Management
+
+Scripts for managing containers:
+
+* `20-container-start.sh`
+  Starts containers
+
+* `21-container-stop.sh`
+  Stops containers
+
+* `23-container-restart.sh`
+  Restarts containers
+
+* `29-container-status.sh`
+  Displays the status of containers
+
+---
+
+## 📝 Notes
+
+* This scripts are tested with Fedora CoreOS 
+* It is recommended to review each script before executing it
