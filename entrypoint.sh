@@ -2,54 +2,54 @@
 #
 # entrypoint.sh
 # --------------
-# Start-Script für den Borg-Backup-Container.
+# Startup script for the Borg backup container.
 #
-# Aufgaben:
-#   - SSH-Hostkeys erzeugen (falls nicht vorhanden)
-#   - .ssh-Verzeichnis für den Benutzer 'borg' vorbereiten
-#   - authorized_keys aus /config/clients.conf generieren
-#     (über /config/build_authorized_keys.sh)
-#   - Rechte korrigieren
-#   - SSH-Daemon starten
+# Tasks:
+#   - Generate SSH host keys (if not present)
+#   - Prepare the .ssh directory for the 'borg' user
+#   - Generate authorized_keys from /config/clients.conf
+#     (via /config/build_authorized_keys.sh)
+#   - Fix permissions
+#   - Start the SSH daemon
 #
 
 set -e
 
-echo "[entrypoint] Starte Borg-Server..."
+echo "[entrypoint] Starting Borg server..."
 
 # ---------------------------------------------------------
-# SSH Hostkeys erzeugen (falls noch nicht vorhanden)
+# Generate SSH host keys (if not already present)
 # ---------------------------------------------------------
-echo "[entrypoint] Erzeuge SSH-Hostkeys (falls nötig)..."
+echo "[entrypoint] Generating SSH host keys (if needed)..."
 ssh-keygen -A
 
 # ---------------------------------------------------------
-# .ssh-Verzeichnis für Benutzer 'borg' vorbereiten
+# Prepare .ssh directory for user 'borg'
 # ---------------------------------------------------------
-echo "[entrypoint] Bereite /home/borg/.ssh vor..."
+echo "[entrypoint] Preparing /home/borg/.ssh..."
 mkdir -p /home/borg/.ssh
 chmod 700 /home/borg/.ssh
 chown borg:borg /home/borg/.ssh
 
 # ---------------------------------------------------------
-# authorized_keys generieren
+# Create authorized_keys
 # ---------------------------------------------------------
 if [ -f /build_authorized_keys.sh ]; then
-    echo "[entrypoint] Generiere authorized_keys aus clients.conf..."
+    echo "[entrypoint] Create authorized_keys from clients.conf..."
     /build_authorized_keys.sh
 else
-    echo "[entrypoint] WARNUNG: /build_authorized_keys.sh nicht gefunden!"
-    echo "[entrypoint] SSH-Login wird NICHT funktionieren!"
+    echo "[entrypoint] WARNING: /build_authorized_keys.sh not found!"
+    echo "[entrypoint] SSH login will NOT work!"
 fi
 
 # ---------------------------------------------------------
-# Repo-Besitz korrigieren
+# set owner of repo
 # ---------------------------------------------------------
-echo "[entrypoint] Setze Besitzerrechte für /repo..."
+echo "[entrypoint] Setting owner of /repo..."
 chown -R borg:borg /repo
 
 # ---------------------------------------------------------
-# SSH starten
+# start SSH
 # ---------------------------------------------------------
-echo "[entrypoint] Starte SSH-Daemon..."
+echo "[entrypoint] Starting SSH-Daemon..."
 exec /usr/sbin/sshd -D -e
