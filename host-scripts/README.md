@@ -1,11 +1,11 @@
 # Backup Server Management Scripts
 
-This collection of scripts helps you manage your backup server.
+This collection of scripts helps you manage your backup server at host site.
 The scripts are organized by functionality for easier usage and maintenance.
 
 ---
 
-## 🔐 SSH User Management
+## 🔐 SSH User Management (generating config/clients.conf)
 
 Scripts for managing SSH access:
 
