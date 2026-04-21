@@ -17,7 +17,6 @@
 
 CONF="config/clients.conf"
 KEYDIR="config/keys"
-HOST_BASE="/var/mnt/extern1/borgbackup"
 
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <username> <group>"
@@ -36,21 +35,14 @@ if [ "$GROUP" != "OWN" ] && [ "$GROUP" != "MIRROR" ]; then
 fi
 
 # autogenerate repo path
-REPO_SUBPATH="${GROUP}/${USERNAME}/repo"
+REPO_SUBPATH="${GROUP}/${USERNAME}"
 CONTAINER_REPO="/repo/${REPO_SUBPATH}"
-HOST_REPO="${HOST_BASE}/${REPO_SUBPATH}"
 
 # check if user exists
 if grep -q "^${USERNAME}::" "$CONF"; then
-    echo "ERROR: User '$USERNAME' already exists in clients.conf!"
+    echo "ERROR: User '$USERNAME' already exists in clients.conf! Aborted."
     exit 1
 fi
-
-# create base directory
-echo "[fix] Change owner for $HOST_BASE"
-echo "[create] Create repo at: $HOST_REPO"
-sudo mkdir -p "$HOST_BASE"
-sudo chown -R core:core "$HOST_BASE"
 
 echo "[create] Create entry in clients.conf"
 echo "${USERNAME}:${GROUP}:${CONTAINER_REPO}" >> "$CONF"
