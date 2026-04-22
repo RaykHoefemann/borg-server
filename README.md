@@ -1,7 +1,7 @@
 # borg-server
 
-**ATTENTION: Currently not working!!!**
-Podman-Container for a BorgBackup server based on Debian and Fedora CoreOS as host.
+**ATTENTION: Currently not working!!!**  
+Podman container for a BorgBackup server based on Debian, with Fedora CoreOS as the host.
 
 ## Features
 
