@@ -37,5 +37,4 @@ podman run \
   --volume=$HOME/containers/borgbackup/config:/config:Z \
   --volume=$HOME/containers/borgbackup/repo:/repo:Z \
   --volume=$HOME/containers/borgbackup/log:/log:Z \
-  --volume=$HOME/containers/borgbackup/data:/data:Z \
   ghcr.io/raykhoefemann/borg-server:0.1
