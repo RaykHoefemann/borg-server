@@ -1,22 +1,22 @@
 # borg-server
 
-ATTENTION: currently it's not working!!!
+ATTENTION: Currently not working!!!
 Podman-Container for a BorgBackup server based on Debian and Fedora CoreOS as host.
 
 ## Features
 
 - Based on `debian:stable-slim` and `borgbackup`
-- All archives are append-only for data integrity
+- All archives are append-only for maximum data integrity (modifying and deleting are forbidden)
 - User accounts for each machine with SSH keys
 - Secure SSH access (root login disabled, password login disabled)
 - Designed for Podman/Docker + systemd environments
 - Configurable volumes for repositories, logs, and configuration
-- Accepts backups from machines in the local network
-- Accepts mirrored backups from external server via tunneled connections (e.g., WireGuard), preferably encrypted
+- Accepts backups from your own machines in the local network
+- Accepts mirrored backups from external servers via tunneled connections (e.g., WireGuard), preferably encrypted for maximum privacy
 
 ## Future Features
 
-- Mirroring own backups to an external server with encryption
+- Mirroring your own backups to an external server with local encryption for maximum privacy
 
 ## Configuration
 
