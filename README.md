@@ -54,9 +54,9 @@ When starting the container, various environment variables and parameters can be
   `--volume=<local-path>:<container-path>:<options>`
 
 
-- **`$HOME/containers/borgbackup/config:/config:Z`** – Mounts the local `config` directory to the container’s `/config` directory. The `Z` option ensures that SELinux-compatible permissions are set.
-- **`$HOME/containers/borgbackup/repo:/repo:Z`** – Mounts the local `repo` directory to the container’s `/repo`, where all backup data will be stored.
-- **`$HOME/containers/borgbackup/log:/log:Z`** – Mounts the local `log` directory to the container’s `/log`, where log files will be stored.
+- **`$HOME/containers/borg-server/config:/config:Z`** – Mounts the local `config` directory to the container’s `/config` directory. The `Z` option ensures that SELinux-compatible permissions are set.
+- **`$HOME/containers/borg-server/repo:/repo:Z`** – Mounts the local `repo` directory to the container’s `/repo`, where all backup data will be stored.
+- **`$HOME/containers/borg-server/log:/log:Z`** – Mounts the local `log` directory to the container’s `/log`, where log files will be stored.
 
 ### Example Command:
 
@@ -67,7 +67,8 @@ podman run \
 -e PUID=1111 \
 -e PGID=1111 \
 --publish=2222:22 \
---volume=$HOME/containers/borgbackup/config:/config:Z \
---volume=$HOME/containers/borgbackup/repo:/repo:Z \
---volume=$HOME/containers/borgbackup/log:/log:Z \
+--volume=$HOME/containers/borg-server/config:/config:Z \
+--volume=$HOME/containers/borg-server/repo:/repo:Z \
+--volume=$HOME/containers/borg-server/log:/log:Z \
 ghcr.io/raykhoefemann/borg-server:0.1
+1
