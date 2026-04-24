@@ -1,0 +1,29 @@
+[Unit]
+Description=Borg Backup Server (Podman)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/podman run \
+    --name=borg-server \
+    --rm \
+    -e PUID=1111 \
+    -e PGID=1111 \
+    --publish=2222:22 \
+    --volume=%h/containers/borgbackup/config:/config:Z \
+    --volume=/var/mnt/extern1/borgbackup:/repo:Z \
+    --volume=%h/containers/borgbackup/log:/log:Z \
+    ghcr.io/raykhoefemann/borg-server:0.1
+
+ExecStop=/usr/bin/podman stop borg-server
+
+Restart=on-failure
+RestartSec=5
+
+User=%u
+Group=%u
+Environment=PODMAN_SYSTEMD_UNIT=%n
+
+[Install]
+WantedBy=default.target
+
