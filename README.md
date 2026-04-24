@@ -71,4 +71,3 @@ podman run \
 --volume=$HOME/containers/borg-server/repo:/repo:Z \
 --volume=$HOME/containers/borg-server/log:/log:Z \
 ghcr.io/raykhoefemann/borg-server:0.1
-1
