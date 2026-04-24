@@ -15,18 +15,25 @@
 
 set -e
 
-echo "[entrypoint] Starting Borg server..."
+LOG="/log/entrypoint.log"
+
+# Log Function
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG"
+}
+
+log "Starting Borg server..."
 
 # ---------------------------------------------------------
 # Generate SSH host keys (if not already present)
 # ---------------------------------------------------------
-echo "[entrypoint] Generating SSH host keys (if needed)..."
+log "Generating SSH host keys (if needed)..."
 ssh-keygen -A
 
 # ---------------------------------------------------------
 # Prepare .ssh directory for user 'borg'
 # ---------------------------------------------------------
-echo "[entrypoint] Preparing /home/borg/.ssh..."
+log "Preparing /home/borg/.ssh..."
 mkdir -p /home/borg/.ssh
 chmod 700 /home/borg/.ssh
 chown borg:borg /home/borg/.ssh
@@ -35,21 +42,24 @@ chown borg:borg /home/borg/.ssh
 # Create authorized_keys
 # ---------------------------------------------------------
 if [ -f /build_authorized_keys.sh ]; then
-    echo "[entrypoint] Create authorized_keys from clients.conf..."
+    log "Create authorized_keys from clients.conf..."
     /build_authorized_keys.sh
 else
-    echo "[entrypoint] WARNING: /build_authorized_keys.sh not found!"
-    echo "[entrypoint] SSH login will NOT work!"
+    log "WARNING: /build_authorized_keys.sh not found!"
+    log "SSH login will NOT work!"
 fi
 
 # ---------------------------------------------------------
 # set owner of repo
 # ---------------------------------------------------------
-echo "[entrypoint] Setting owner of /repo..."
+log "Setting owner of /repo..."
 chown -R borg:borg /repo
 
 # ---------------------------------------------------------
 # start SSH
 # ---------------------------------------------------------
-echo "[entrypoint] Starting SSH-Daemon..."
+log "Starting SSH-Daemon..."
 exec /usr/sbin/sshd -D -e
+
+log "done."
+
