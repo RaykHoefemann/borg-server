@@ -52,6 +52,5 @@ mkdir -p "$KEYDIR"
 touch "${KEYDIR}/${USERNAME}.pub"
 
 echo "[create] User '$USERNAME' created."
-echo "→ Set now the public key with:"
-echo "     ./scripts/01-ssh-set-user-key.sh ${USERNAME} <keyfile>"
+echo "→ Set now the public key!"
 

@@ -51,5 +51,5 @@ else
 fi
 
 echo "[key] Public key saved in: $TARGET"
-echo "→ Please restart the container:"
+echo "→ Please restart the container!"
 
