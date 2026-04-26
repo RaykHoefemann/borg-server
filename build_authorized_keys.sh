@@ -17,6 +17,22 @@ log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG"
 }
 
+# sanity checks
+if [ ! -f "$CONF" ]; then
+    log "[ERROR] Config file $CONF not found – aborting"
+    exit 1
+fi
+
+if [ ! -d "$KEYDIR" ]; then
+    log "[ERROR] Key directory $KEYDIR not found – aborting"
+    exit 1
+fi
+
+if [ ! -d "$(dirname "$OUT")" ]; then
+    log "[ERROR] Target directory $(dirname "$OUT") not found – aborting"
+    exit 1
+fi
+
 # Header
 log "# Starting the build of authorized_keys..."
 echo "# Auto-generated authorized_keys" > "$OUT"
