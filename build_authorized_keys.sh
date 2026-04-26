@@ -45,6 +45,9 @@ while IFS="::" read -r name group repo mode; do
     [ -z "$name" ] && continue
     echo "$name" | grep -q "^#" && continue
 
+    # Log the found user
+    log "[INFO] Found user: '$name'"
+
     KEYFILE="${KEYDIR}/${name}.pub"
 
     if [ ! -f "$KEYFILE" ]; then
@@ -52,7 +55,16 @@ while IFS="::" read -r name group repo mode; do
         continue
     fi
 
+    # Check if the keyfile is empty
+    if [ ! -s "$KEYFILE" ]; then
+        log "[WARN] Public key file '$KEYFILE' for '$name' is empty – will be skipped"
+        continue
+    fi
+
     key="$(cat "$KEYFILE")"
+
+    # Log the key's content status (optional, only for debugging)
+    log "[INFO] Public key for '$name' is valid and non-empty"
 
     # forced command with append-only
     CMD="borg serve --restrict-to-path $repo --append-only"
