@@ -12,7 +12,9 @@ Podman container for a BorgBackup server based on Debian, with Fedora CoreOS as 
 - Designed for Podman/Docker + systemd environments
 - Configurable volumes for repositories, logs, and configuration
 - Accepts backups from your own machines in the local network
-- Accepts mirrored backups from external servers via tunneled connections (e.g., WireGuard), preferably encrypted for maximum privacy
+- Accepts mirrored backups from another server, such as an external host
+  - preferably encrypted on the source side for maximum privacy
+  - preferably transmitted via tunneled connections (e.g., WireGuard, exposing only the ssh-port) for maximum security
 
 ## Future Features
 
