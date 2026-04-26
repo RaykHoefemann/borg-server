@@ -11,7 +11,7 @@ ExecStart=/usr/bin/podman run \
     -e PGID=1111 \
     --publish=2222:22 \
     --volume=%h/containers/borg-server/config:/config:Z \
-    --volume=%h/containers/borg-server:/repo:Z \
+    --volume=%h/containers/borg-server/repo:/repo:Z \
     --volume=%h/containers/borg-server/log:/log:Z \
     ghcr.io/raykhoefemann/borg-server:0.1
 
