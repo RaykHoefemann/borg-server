@@ -16,7 +16,7 @@ Podman container for a BorgBackup server based on Debian, with Fedora CoreOS as 
 
 ## Future Features
 
-- Mirroring your own backups to an external server with local encryption for maximum privacy
+- Mirroring your backups to another server, such as an external host, with local encryption for maximum privacy
 
 ## Configuration
 
