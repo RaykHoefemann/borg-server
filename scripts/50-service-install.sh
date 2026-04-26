@@ -1,12 +1,12 @@
 #!/bin/sh
 #
-# 10-install-service.sh
+# 50-install-service.sh
 # ---------------------
 # Installs the systemd unit for the Borg server as a rootless container
 # and creates a symlink to avoid duplicate files.
 #
 # Usage:
-#   ./scripts/10-install-service.sh
+#   ./scripts/90-install-service.sh
 #
 
 set -e

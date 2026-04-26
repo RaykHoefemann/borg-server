@@ -1,15 +1,15 @@
 #!/bin/sh
 #
-# 22-container-restart.sh
+# 92-container-restart.sh
 # --------------
 # Restarts the Borg server container.
 # Must be executed when clients.conf has been modified.
 #
 # Usage:
-#   ./scripts/22-container-restart.sh
+#   ./scripts/92-container-restart.sh
 #
 # Example:
-#   ./scripts/22-container-restart.sh
+#   ./scripts/92-container-restart.sh
 #
 
 echo "[restart] Restarting Borg server..."

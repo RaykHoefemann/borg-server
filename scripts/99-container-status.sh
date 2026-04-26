@@ -1,15 +1,15 @@
 #!/bin/sh
 #
-# 29-container-status.sh
+# 99-container-status.sh
 # -------------
 # Shows the current status of the Borg-Backup container.
 # Detects both systemd-managed and regular Podman containers.
 #
 # Usage:
-#   ./scripts/29-container-status.sh
+#   ./scripts/99-container-status.sh
 #
 # Example:
-#   ./scripts/29-container-status.sh
+#   ./scripts/99-container-status.sh
 #
 
 SERVICE="container-borg-server.service"

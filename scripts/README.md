@@ -25,7 +25,7 @@ Scripts for managing SSH access:
 
 ## ⚙️ Service Installation
 
-* `10-service-install.sh`
+* `50-service-install.sh`
   Installs required services on the server
 
 ---
@@ -34,16 +34,16 @@ Scripts for managing SSH access:
 
 Scripts for managing containers:
 
-* `20-container-start.sh`
+* `90-container-start.sh`
   Starts containers
 
-* `21-container-stop.sh`
+* `91-container-stop.sh`
   Stops containers
 
-* `22-container-restart.sh`
+* `92-container-restart.sh`
   Restarts containers
 
-* `29-container-status.sh`
+* `99-container-status.sh`
   Displays the status of containers
 
 ---
