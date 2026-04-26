@@ -10,9 +10,9 @@ ExecStart=/usr/bin/podman run \
     -e PUID=1111 \
     -e PGID=1111 \
     --publish=2222:22 \
-    --volume=%h/containers/borgbackup/config:/config:Z \
-    --volume=/var/mnt/extern1/borgbackup:/repo:Z \
-    --volume=%h/containers/borgbackup/log:/log:Z \
+    --volume=%h/containers/borg-server/config:/config:Z \
+    --volume=%h/containers/borg-server:/repo:Z \
+    --volume=%h/containers/borg-server/log:/log:Z \
     ghcr.io/raykhoefemann/borg-server:0.1
 
 ExecStop=/usr/bin/podman stop borg-server
