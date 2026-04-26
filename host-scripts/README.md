@@ -40,7 +40,7 @@ Scripts for managing containers:
 * `21-container-stop.sh`
   Stops containers
 
-* `23-container-restart.sh`
+* `22-container-restart.sh`
   Restarts containers
 
 * `29-container-status.sh`
