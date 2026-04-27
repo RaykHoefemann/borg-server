@@ -146,3 +146,29 @@ podman run \
   --volume=$HOME/containers/borg-server/repo:/repo:Z \
   --volume=$HOME/containers/borg-server/log:/log:Z \
   ghcr.io/raykhoefemann/borg-server:0.1
+```
+
+### Client Configuration
+This configuration allows borg-server to automatically map incoming backups to the correct repository while enforcing strict client isolation and access control. The scripts in the scripts directory can be used to create and populate these files automatically.
+
+#### clients.Config
+- **File:** `config/clients.conf`  
+- **Format:** `<user-machine>:<group>:<repo>`  
+- **Example:**
+user1-pc1:OWN:/repo/OWN/user1-pc1
+user2-pc1:OWN:/repo/OWN/user2-pc1
+friend1:MIRROR:/repo/MIRROR/friend1
+
+#### SSH Keys
+
+- Each client has a dedicated public key stored in `config/keys/<client>.pub`  
+- The file name must match the client name  
+- **Example structure:**
+config/keys/
+├── user1-pc1.pub
+├── user2-pc1.pub
+└── friend1.pub
+
+#### Visual Overview
+clients.conf + keys/ ---> borg-server ---> Repositories (/repo/...)
+
