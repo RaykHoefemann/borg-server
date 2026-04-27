@@ -153,21 +153,27 @@ This configuration allows borg-server to automatically map incoming backups to t
 
 #### clients.Config
 - **File:** `config/clients.conf`  
-- **Format:** `<user-machine>:<group>:<repo>`  
-- **Example:**
-user1-pc1:OWN:/repo/OWN/user1-pc1
-user2-pc1:OWN:/repo/OWN/user2-pc1
+- **Format:** `<client>:<group>:<repo>`  
+- **Example:**  
+```
+user1-os1-pc1:OWN:/repo/OWN/user1-os1-pc1
+user2-os1-pc1:OWN:/repo/OWN/user2-os1-pc1
+user-pc2:OWN:/repo/OWN/user-pc2
 friend1:MIRROR:/repo/MIRROR/friend1
+```
 
 #### SSH Keys
 
 - Each client has a dedicated public key stored in `config/keys/<client>.pub`  
 - The file name must match the client name  
 - **Example structure:**
+```
 config/keys/
-├── user1-pc1.pub
-├── user2-pc1.pub
+├── user1-os1-pc1.pub
+├── user2-os1-pc1.pub
+├── user-pc2.pub
 └── friend1.pub
+```
 
 #### Visual Overview
 clients.conf + keys/ ---> borg-server ---> Repositories (/repo/...)
