@@ -1,20 +1,99 @@
 # borg-server
 
-**ATTENTION: Currently not working!!!**  
-Podman container for a backup server based on BorgBackup.
+**Minimal, security-focused BorgBackup server for multi-client environments**
 
-## Features
+borg-server is a lightweight server wrapper around BorgBackup designed to receive backups from multiple clients while maintaining a minimal attack surface.
 
-- Based on `debian:stable-slim` and `borgbackup`
-- All archives are append-only for maximum data integrity (modifying and deleting are forbidden)
-- User accounts for each machine with SSH keys
-- Secure SSH access (root login disabled, password login disabled)
-- Designed for Podman/Docker + systemd environments
-- Configurable volumes for repositories, logs, and configuration
-- Accepts backups from your own machines in the local network
-- Accepts mirrored backups from another server, such as an external host
-  - preferably encrypted on the source side for maximum privacy
-  - preferably transmitted via tunneled connections (e.g., WireGuard, exposing only the ssh-port) for maximum security
+It intentionally avoids unnecessary complexity such as web interfaces or orchestration layers, focusing instead on secure, predictable, and transparent behavior.
+
+---
+
+## ✨ Features
+
+- 🔒 **Security-first design**  
+  Minimal attack surface, no web interface, no unnecessary services
+
+- 👥 **Multi-client support**  
+  Multiple users and devices can push backups to the same server
+
+- 🗂️ **Repository isolation**  
+  Logical separation of client backups (depending on configuration)
+
+- 🔁 **Mirror backup ingestion**  
+  Accept backups from other servers (offsite / redundancy setups)
+
+- ⚙️ **Fully config-driven**  
+  All behavior defined via simple configuration files
+
+- 🧪 **Safe testing environment**  
+  Designed to test backup strategies before production deployment
+
+- 📝 **Centralized logging**  
+  Logs stored locally in `/log`
+
+- 🚫 **No orchestration layer**  
+  No scheduling, no automation magic — stays transparent and predictable
+---
+
+## 🎯 Design Goals
+
+- **Minimal attack surface**  
+  No web UI, no exposed services beyond what is strictly required.
+
+- **Explicit configuration**  
+  All behavior is defined via config files — no hidden automation.
+
+- **Server-side focus**  
+  Handles backup ingestion, not client orchestration.
+
+- **Security over convenience**  
+  Designed for environments where backups are critical assets.
+
+---
+
+## 🛡️ Core Principles & Implementation Details
+
+borg-server is built around a strict and opinionated setup to maximize security and reliability:
+
+- **Base system**  
+  Built on `debian:stable-slim` with `borgbackup` installed  
+  → minimal, well-maintained, predictable environment
+
+- **Append-only repositories**  
+  All Borg repositories are configured as append-only  
+  → existing backups cannot be modified or deleted
+
+- **Per-client user isolation**  
+  Each machine uses its own system user and SSH key  
+  → strict separation between clients
+
+- **Hardened SSH setup**  
+  - root login disabled  
+  - password authentication disabled  
+  → access only via SSH keys
+
+- **Container-first deployment**  
+  Designed for use with Podman or Docker  
+  → integrates cleanly into systemd-based environments
+
+- **Strict volume separation**  
+  Configurable mount points for:
+  - repositories
+  - logs
+  - configuration  
+  → clear separation of concerns and easier hardening
+
+- **Local network backup ingestion**  
+  Accepts backups from trusted machines inside a local network
+
+- **Mirror / offsite backup support**  
+  Accepts backups from external servers for redundancy setups
+
+  Recommended practices:
+  - client-side encryption (Borg) for maximum privacy  
+  - tunneled connections (e.g. WireGuard)  
+  - expose only SSH port if external access is required  
+## 🧱 Architecture Overview
 
 ## Future Features
 
