@@ -148,7 +148,7 @@ podman run \
   ghcr.io/raykhoefemann/borg-server:0.1
 ```
 
-### Client Configuration
+### Configuration for Client Access
 This configuration allows borg-server to automatically map incoming backups to the correct repository while enforcing strict client isolation and access control. The scripts in the scripts directory can be used to create and populate these files automatically.
 
 #### clients.Config
