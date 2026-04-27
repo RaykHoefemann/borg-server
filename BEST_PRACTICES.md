@@ -14,7 +14,8 @@ These are recommended practices for using borg-server securely and effectively.
 
 ## 🔗 Secure Transport
 
-- Use **tunneled connections**, such as WireGuard or SSH tunnels, when replicating backups over untrusted networks.  
+- All backups are transmitted over **SSH**, which provides authentication and encryption by default.  
+- For **external or untrusted network access**, consider using an additional VPN tunnel (e.g., WireGuard) to further isolate and protect SSH connections.  
 - Only expose the necessary **SSH port**; avoid exposing additional services.
 
 ---
