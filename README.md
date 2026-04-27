@@ -51,6 +51,69 @@ It intentionally avoids unnecessary complexity such as web interfaces or orchest
 
 ---
 
+## 🔐 Security Model
+
+borg-server is designed with a strict security-first approach.  
+The system assumes that clients may be compromised and therefore enforces security on the server side.
+
+---
+
+### Access Control
+
+- SSH key-based authentication only
+- Password authentication is disabled
+- Root login via SSH is disabled
+- Each client uses a dedicated system user
+
+---
+
+### Network Exposure
+
+- No web interface
+- No HTTP API
+- SSH is the only entry point
+- Designed for deployment behind VPNs (e.g. WireGuard) when exposed outside trusted networks
+
+---
+
+### Isolation Model
+
+- Each machine is assigned a separate user context
+- Backup repositories are logically separated per client
+- Cross-client access is not permitted
+
+---
+
+### Immutable Storage (Append-Only Enforcement)
+
+borg-server enforces **append-only mode server-side for all repositories**.
+
+This behavior cannot be disabled or bypassed by clients.
+
+Even in case of a compromised client, it is not possible to:
+
+- modify existing backup archives
+- delete historical backup data
+- disable append-only protection
+
+This ensures that all stored backups are treated as immutable once written.
+
+---
+
+### Threat Model
+
+The system is designed under the assumption that:
+
+- clients may be compromised
+- network connections may be partially untrusted
+- only the server is trusted to enforce integrity rules
+
+Therefore:
+
+- all integrity guarantees are enforced server-side
+- clients are considered untrusted input sources
+- backup history is treated as immutable storage
+
 ## 🛡️ Core Principles & Implementation Details
 
 borg-server is built around a strict and opinionated setup to maximize security and reliability:
