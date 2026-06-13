@@ -35,10 +35,35 @@ RUN mkdir -p /home/borg/.ssh && \
     chown -R borg:borg /home/borg/.ssh && \
     chmod 700 /home/borg/.ssh
 
-# SSH config: disable root login, allow only borg
-RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config && \
-    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config && \
-    echo "AllowUsers borg" >> /etc/ssh/sshd_config
+# ---------------------------------------------------------
+# Hardened SSH configuration (single source of truth)
+# ---------------------------------------------------------
+RUN cat <<'EOF' > /etc/ssh/sshd_config
+Port 22
+
+PermitRootLogin no
+PasswordAuthentication no
+PermitEmptyPasswords no
+
+AllowUsers borg
+
+# --- Disable interactive / forwarding features ---
+PermitTTY no
+AllowTcpForwarding no
+X11Forwarding no
+PermitTunnel no
+GatewayPorts no
+
+# --- Key-based auth only ---
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+
+# --- Logging / runtime ---
+PrintMotd no
+UsePAM no
+
+Subsystem sftp /usr/lib/openssh/sftp-server
+EOF
 
 # Copy scripts into the image
 COPY build_authorized_keys.sh /build_authorized_keys.sh
