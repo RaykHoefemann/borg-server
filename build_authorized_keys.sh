@@ -40,7 +40,7 @@ echo "# Do not edit manually" >> "$OUT"
 echo "" >> "$OUT"
 
 # read each line from clients.conf
-while IFS="::" read -r name group repo mode; do
+while IFS=":" read -r name group repo; do
     # skip empty lines and comments
     [ -z "$name" ] && continue
     echo "$name" | grep -q "^#" && continue
@@ -67,7 +67,7 @@ while IFS="::" read -r name group repo mode; do
     log "[INFO] Public key for '$name' is valid and non-empty"
 
     # forced command with append-only
-    CMD="borg serve --restrict-to-path $repo --append-only"
+    CMD="/borg-wrapper.sh $repo"
 
     # create new entry in authorized_keys
     echo "command=\"$CMD\",restrict $key" >> "$OUT"
