@@ -7,6 +7,8 @@
 #   /config/keys/<name>.pub (public ssh-key from user)
 #
 
+set -eu
+
 CONF="/config/clients.conf"
 KEYDIR="/config/keys"
 OUT="/home/borg/.ssh/authorized_keys"
