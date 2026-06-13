@@ -46,7 +46,8 @@ RUN chmod +x /build_authorized_keys.sh
 
 # Copy 'entrypoint.sh' into the image
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY borg-wrapper.sh /borg-wrapper.sh
+RUN chmod +x /entrypoint.sh /borg-wrapper.sh
 
 EXPOSE 22
 
