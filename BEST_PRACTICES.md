@@ -1,6 +1,6 @@
 # Best Practices for borg-server
 
-These are recommended practices for using borg-server securely and effectively.  
+These are recommended practices for using this borg-server securely and effectively.  
 **Note:** These are guidelines for administrators; borg-server does **not enforce these practices**—they must be implemented at the operator level.
 
 ---
