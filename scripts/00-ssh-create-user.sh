@@ -16,7 +16,6 @@
 #
 
 set -e
-
 #load setup for all scripts
 . "$(dirname "$0")/../config.sh"
 
