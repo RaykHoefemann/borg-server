@@ -12,6 +12,8 @@
 #   ./scripts/99-container-status.sh
 #
 
+set -e
+
 SERVICE="container-borg-server.service"
 CONTAINER="borg-server"
 
