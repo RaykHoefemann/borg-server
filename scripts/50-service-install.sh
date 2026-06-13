@@ -14,7 +14,6 @@ set -e
 . "$(dirname "$0")/../config.sh"
 
 SERVICE_DIR="$HOME/.config/systemd/user"
-SERVICE_NAME="container-borg-server.service"
 SOURCE_FILE="$(pwd)/systemd/$SERVICE_NAME"
 TARGET_FILE="$SERVICE_DIR/$SERVICE_NAME"
 
@@ -40,7 +39,7 @@ echo "[install] Symlink created:"
 echo "  $TARGET_FILE -> $SOURCE_FILE"
 
 systemctl --user daemon-reload
-systemctl --user enable "$SERVICE_NAME"
+systemctl --user enable "$SERVICE"
 
 echo "[install] Service enabled for rootless container."
 echo "→ To start the service use 90-container-start.sh"
