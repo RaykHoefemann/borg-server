@@ -17,4 +17,11 @@ set -e
 
 echo "[start] Starting Borg server..."
 systemctl --user start "$SERVICE"
+if systemctl --user is-active --quiet "$SERVICE"; then
+    echo "[start] Service is running."
+else
+    echo "ERROR: Service failed to start!"
+    systemctl --user status "$SERVICE" --no-pager
+    exit 1
+fi
 echo "[start] Done."
