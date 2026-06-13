@@ -17,5 +17,5 @@ set -e
 . "$(dirname "$0")/../config.sh"
 
 echo "[restart] Restarting Borg server..."
-systemctl --user restart container-borg-server.service
+systemctl --user restart "$SERVICE"
 echo "[restart] Done."
