@@ -15,6 +15,8 @@
 #   MIRROR  external users (e.g. friends)
 #
 
+set -e
+
 #load setup for all scripts
 . "$(dirname "$0")/../config.sh"
 
