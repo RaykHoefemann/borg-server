@@ -11,6 +11,8 @@
 #   ./scripts/91-container-stop.sh
 #
 
+set -e
+
 echo "[stop] Stopping Borg server..."
 systemctl --user stop container-borg-server.service
 echo "[stop] Done."
