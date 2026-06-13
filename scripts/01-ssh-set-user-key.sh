@@ -13,8 +13,8 @@
 #   ./scripts/01-ssh-set-user-key.sh test test-key.pub
 #
 
-KEYDIR="config/keys"
-CONF="config/clients.conf"
+#load setup for all scripts
+. "$(dirname "$0")/../config.sh"
 
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <username> <public-key-file|public-key-string>"
