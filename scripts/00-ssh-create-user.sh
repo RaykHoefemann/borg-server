@@ -5,7 +5,7 @@
 # Creates a new Borg client:
 #  - Repository directory on the host
 #  - Entry in config/clients.conf
-#  - Empty public key file
+#  - Empty public key file in config/keys/
 #
 # Usage:
 #   ./scripts/00-ssh-create-user.sh <username> <group>
@@ -27,6 +27,13 @@ fi
 USERNAME="$1"
 GROUP="$2"
 
+mkdir -p "$(dirname "$CONF")"
+touch "$CONF"
+
+case "$USERNAME" in
+    *[!a-zA-Z0-9_-]*) echo "ERROR: Invalid username '$USERNAME' (only a-z, 0-9, _, - allowed)"; exit 1 ;;
+esac
+
 # validate group
 if [ "$GROUP" != "OWN" ] && [ "$GROUP" != "MIRROR" ]; then
     echo "ERROR: unknown group '$GROUP'"
@@ -39,7 +46,7 @@ REPO_SUBPATH="${GROUP}/${USERNAME}"
 CONTAINER_REPO="/repo/${REPO_SUBPATH}"
 
 # check if user exists
-if grep -q "^${USERNAME}::" "$CONF"; then
+if grep -q "^${USERNAME}:" "$CONF"; then
     echo "ERROR: User '$USERNAME' already exists in clients.conf! Aborted."
     exit 1
 fi
