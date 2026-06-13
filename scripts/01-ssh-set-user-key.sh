@@ -33,6 +33,16 @@ fi
 TARGET="${KEYDIR}/${USERNAME}.pub"
 mkdir -p "$KEYDIR"
 
+if [ -s "$TARGET" ]; then
+    echo "WARNING: A key for '$USERNAME' already exists."
+    printf "Overwrite? [y/N] "
+    read -r CONFIRM
+    case "$CONFIRM" in
+        y|Y) echo "[key] Overwriting existing key." ;;
+        *) echo "Aborted."; exit 0 ;;
+    esac
+fi
+
 # Fall 1: INPUT is a existing file
 if [ -f "$INPUT" ]; then
     echo "[key] Read key from file: $INPUT"
