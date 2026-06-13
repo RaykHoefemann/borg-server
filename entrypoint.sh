@@ -45,8 +45,8 @@ if [ -f /build_authorized_keys.sh ]; then
     log "Create authorized_keys from clients.conf..."
     /build_authorized_keys.sh
 else
-    log "WARNING: /build_authorized_keys.sh not found!"
-    log "SSH login will NOT work!"
+    log "ERROR: /build_authorized_keys.sh not found! Aborting."
+    exit 1
 fi
 
 # ---------------------------------------------------------
