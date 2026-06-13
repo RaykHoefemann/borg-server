@@ -39,8 +39,8 @@ echo "  $TARGET_FILE -> $SOURCE_FILE"
 
 systemctl --user daemon-reload
 systemctl --user enable "$SERVICE_NAME"
-systemctl --user start "$SERVICE_NAME"
 
-echo "[install] Service enabled & started for rootless container."
+echo "[install] Service enabled for rootless container."
+echo "→ To start the service use 90-container-start.sh"
 echo "→ To start the service on boot without login, run:"
 echo "  loginctl enable-linger $USER"
