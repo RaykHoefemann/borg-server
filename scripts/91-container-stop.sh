@@ -16,5 +16,5 @@ set -e
 . "$(dirname "$0")/../config.sh"
 
 echo "[stop] Stopping Borg server..."
-systemctl --user stop container-borg-server.service
+systemctl --user stop "$SERVICE"
 echo "[stop] Done."
