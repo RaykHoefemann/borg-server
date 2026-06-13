@@ -6,7 +6,7 @@
 # and creates a symlink to avoid duplicate files.
 #
 # Usage:
-#   ./scripts/90-install-service.sh
+#   ./scripts/50-install-service.sh
 #
 
 set -e
@@ -17,6 +17,11 @@ SOURCE_FILE="$(pwd)/systemd/$SERVICE_NAME"
 TARGET_FILE="$SERVICE_DIR/$SERVICE_NAME"
 
 echo "[install] Installing systemd unit as symlink..."
+
+if [ ! -f "$SOURCE_FILE" ]; then
+    echo "ERROR: Service file not found: $SOURCE_FILE"
+    exit 1
+fi
 
 mkdir -p "$SERVICE_DIR"
 
@@ -34,5 +39,8 @@ echo "  $TARGET_FILE -> $SOURCE_FILE"
 
 systemctl --user daemon-reload
 systemctl --user enable "$SERVICE_NAME"
+systemctl --user start "$SERVICE_NAME"
 
-echo "[install] Service enabled for rootless container."
+echo "[install] Service enabled & started for rootless container."
+echo "→ To start the service on boot without login, run:"
+echo "  loginctl enable-linger $USER"
