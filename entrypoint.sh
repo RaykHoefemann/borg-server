@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # entrypoint.sh
 # --------------
@@ -13,7 +13,7 @@
 #   - Start the SSH daemon
 #
 
-set -eu
+set -euo pipefail
 
 LOG="/log/entrypoint.log"
 
