@@ -42,10 +42,29 @@ All critical security measures are enforced **server-side**.
 
 ### Access Control
 
-- SSH key-based authentication only  
-- Password authentication is disabled  
-- Root login via SSH is disabled  
-- Each client uses a dedicated system user
+- SSH key-based authentication only
+- Password authentication is disabled
+- Root login via SSH is disabled
+- Each client authenticates with a dedicated SSH key
+- Each client is restricted to its own repository path via forced commands
+- Cross-client access is enforced server-side and cannot be bypassed
+
+### SSH Hardening
+
+- Only modern, secure algorithms permitted (curve25519, chacha20-poly1305, aes256-gcm, hmac-sha2-512)
+- RSA and legacy algorithms are disabled
+- All interactive features disabled (TTY, TCP forwarding, X11, tunneling)
+- Login grace time limited to 15 seconds
+- Maximum 2 authentication attempts per connection
+- Maximum 5 concurrent sessions
+- Parallel connection attempts limited per source IP (MaxStartups, PerSourceMaxStartups)
+- SSH host keys are stored persistently in the config volume — host identity survives container restarts
+
+### Repository Enforcement
+
+- Append-only mode enforced server-side — clients cannot delete or modify existing archives
+- Unencrypted repositories are rejected at connection time
+- Each client is restricted to its own repository path — no cross-client access possible
 
 ### Network Exposure
 
