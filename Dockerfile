@@ -40,29 +40,33 @@ RUN mkdir -p /home/borg/.ssh && \
 # ---------------------------------------------------------
 RUN cat <<'EOF' > /etc/ssh/sshd_config
 Port 22
-
 PermitRootLogin no
 PasswordAuthentication no
 PermitEmptyPasswords no
-
 AllowUsers borg
-
 # --- Disable interactive / forwarding features ---
 PermitTTY no
 AllowTcpForwarding no
 X11Forwarding no
 PermitTunnel no
 GatewayPorts no
-
 # --- Key-based auth only ---
 PubkeyAuthentication yes
 AuthorizedKeysFile .ssh/authorized_keys
-
+# --- Hardened algorithms ---
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org
+HostKeyAlgorithms ssh-ed25519
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+MACs hmac-sha2-512-etm@openssh.com
+# --- Host Keys (persistent via volume) ---
+HostKey /config/ssh_host_keys/ssh_host_ed25519_key
+HostKey /config/ssh_host_keys/ssh_host_rsa_key
 # --- Logging / runtime ---
 PrintMotd no
 UsePAM no
-
-Subsystem sftp /usr/lib/openssh/sftp-server
+LoginGraceTime 15
+MaxAuthTries 2
+MaxSessions 5
 EOF
 
 # Copy scripts into the image
