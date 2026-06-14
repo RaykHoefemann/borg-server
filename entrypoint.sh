@@ -27,8 +27,22 @@ log "Starting Borg server..."
 # ---------------------------------------------------------
 # Generate SSH host keys (if not already present)
 # ---------------------------------------------------------
-log "Generating SSH host keys (if needed)..."
-ssh-keygen -A
+log "looking for SSH host keys..."
+# SSH Host Keys persistent halten
+HOST_KEY_DIR="/config/ssh_host_keys"
+mkdir -p "$HOST_KEY_DIR"
+
+if [ ! -f "$HOST_KEY_DIR/ssh_host_ed25519_key" ]; then
+    log "[INFO] Generating new SSH host keys..."
+    ssh-keygen -t ed25519 -f "$HOST_KEY_DIR/ssh_host_ed25519_key" -N ""
+    ssh-keygen -t rsa -b 4096 -f "$HOST_KEY_DIR/ssh_host_rsa_key" -N ""
+else
+    log "[INFO] Using existing SSH host keys."
+fi
+
+# sshd auf die Keys im Volume zeigen lassen
+sed -i "s|#HostKey /etc/ssh/ssh_host_ed25519_key|HostKey $HOST_KEY_DIR/ssh_host_ed25519_key|" /etc/ssh/sshd_config
+sed -i "s|#HostKey /etc/ssh/ssh_host_rsa_key|HostKey $HOST_KEY_DIR/ssh_host_rsa_key|" /etc/ssh/sshd_config
 
 # ---------------------------------------------------------
 # Prepare .ssh directory for user 'borg'
