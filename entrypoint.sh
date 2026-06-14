@@ -67,8 +67,13 @@ fi
 # ---------------------------------------------------------
 # set owner of repo
 # ---------------------------------------------------------
-log "Setting owner of /repo..."
-chown -R borg:borg /repo
+log "Checking owner of /repo..."
+if [ "$(stat -c '%U:%G' /repo)" != "borg:borg" ]; then
+    log "[INFO] Fixing /repo ownership..."
+    chown borg:borg /repo
+else
+    log "[INFO] /repo ownership OK."
+fi
 
 # ---------------------------------------------------------
 # start SSH
