@@ -25,8 +25,8 @@ RUN apt-get autoremove -y
 RUN mkdir -p /var/run/sshd
 
 # Set User for Borg
-ENV PUID=1111
-ENV PGID=1111
+ARG ENV PUID=1111
+ARG ENV PGID=1111
 
 RUN groupadd -g ${PGID} borg && \
     useradd -u ${PUID} -g ${PGID} -m -d /home/borg -s /bin/bash borg
