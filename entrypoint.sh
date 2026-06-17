@@ -15,6 +15,16 @@
 
 set -euo pipefail
 
+if [ ! -d /log ]; then
+    echo "FATAL: /log not found. Mount a volume to /log, e.g. --volume=\$HOME/containers/borg-server/log:/log:Z" >&2
+    exit 1
+fi
+
+if [ ! -w /log ]; then
+    echo "FATAL: /log exists but is not writable by this container (check ownership/SELinux label)" >&2
+    exit 1
+fi
+
 LOG="/log/entrypoint.log"
 
 # Log Function
