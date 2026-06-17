@@ -140,11 +140,6 @@ However, secure operation also depends on proper configuration and operational p
 
 ## 🛠 Deployment & Configuration
 
-### Environment Variables
-
-- **`PUID`** – User ID inside the container (default `1111`)  
-- **`PGID`** – Group ID inside the container (default `1111`)
-
 ### Container Options
 
 - `--name` – Container name  
@@ -158,8 +153,6 @@ However, secure operation also depends on proper configuration and operational p
 podman run \
   --name=borg-server \
   --rm \
-  -e PUID=1111 \
-  -e PGID=1111 \
   --publish=2222:22 \
   --volume=$HOME/containers/borg-server/config:/config:Z \
   --volume=$HOME/containers/borg-server/repo:/repo:Z \
