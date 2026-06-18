@@ -1,192 +1,203 @@
-# borg-server
+# hardened-borg-server
 
-**Minimal, security-focused BorgBackup server for multi-client environments**
+**Security-hardened BorgBackup server for controlled multi-client backup environments**
 
-borg-server is a lightweight server wrapper around BorgBackup designed to receive backups from multiple clients while maintaining a minimal attack surface.  
-It intentionally avoids unnecessary complexity such as web interfaces or orchestration layers, focusing instead on secure, predictable, and transparent behavior.
+hardened-borg-server is a minimal, security-focused server wrapper around BorgBackup designed to receive backups from multiple clients in a strictly controlled and hardened deployment environment.
+
+It is intentionally designed to avoid unnecessary complexity such as web interfaces, orchestration layers, or multi-purpose APIs, focusing instead on a small, auditable and predictable security surface.
+
+---
+
+## 🔐 Security Model Overview
+
+hardened-borg-server is built as part of a **defense-in-depth backup architecture** and assumes a strict separation between:
+
+- the **application layer (this project)**
+- the **host system (operator responsibility)**
+- the **client systems (untrusted)**
+
+### Trust Boundaries
+
+- **Trusted:** hardened-borg-server runtime (containerized application layer)
+- **Trusted (required):** hardened host environment (SELinux / rootless / isolation)
+- **Untrusted:** all client systems and backup sources
+- **Partially trusted:** network layer (protected via SSH, optionally VPN)
+
+---
+
+## 🛡️ Security Guarantees (with correct deployment)
+
+When deployed according to the required baseline configuration (see `BEST_PRACTICES.md`), hardened-borg-server provides:
+
+- Strict repository isolation between clients
+- No shell access for backup clients (Borg-only execution context)
+- Server-side enforced access control via forced commands
+- Append-only backup semantics enforced at the server layer
+- No cross-client data access via SSH restrictions
+- Minimal exposed attack surface (SSH only)
+
+These guarantees depend on correct host hardening and adherence to operational requirements.
 
 ---
 
 ## ✨ Features
 
-- 🔒 **Security-first design**  
-  Minimal attack surface, no web interface, no unnecessary services.
+- 🔒 **Security-hardened design**
+  Minimal attack surface, no web interface, no orchestration layer.
 
-- 👥 **Multi-client support**  
-  Multiple users and devices can push backups to the same server.
+- 👥 **Multi-client support**
+  Multiple clients can securely push backups to a single server.
 
-- 🗂️ **Repository isolation**  
-  Logical separation of client backups per configuration.
+- 🗂️ **Strong repository isolation**
+  Each client is mapped to a strictly separated repository path.
 
-- 🔁 **Mirror backup ingestion**  
-  Accept backups from other servers for offsite or redundancy setups.
+- 🔁 **Mirror / offsite ingestion support**
+  Supports backup replication from other Borg servers.
 
-- ⚙️ **Fully config-driven**  
-  All behavior defined via simple configuration files.
+- ⚙️ **Fully config-driven architecture**
+  No hidden logic, all behavior explicitly defined in configuration.
 
-- 🧪 **Safe testing environment**  
-  Designed for testing backup strategies before production deployment.
+- 🧪 **Safe testing mode**
+  Enables validation of backup workflows before production usage.
 
-- 📝 **Centralized logging**  
-  Logs stored locally in `/log`.
+- 📝 **Centralized logging**
+  Local log storage under `/log`.
 
-- 🚫 **No orchestration layer**  
-  No scheduling or automation magic — stays transparent and predictable.
+- 🚫 **No orchestration layer**
+  No scheduling, no automation system — deterministic execution only.
 
 ---
 
-## 🔐 Security Model
-
-borg-server is built with a **strict security-first approach**, assuming that clients may be compromised.  
-All critical security measures are enforced **server-side**.
-
-### Access Control
-
-- SSH key-based authentication only
-- Password authentication is disabled
-- Root login via SSH is disabled
-- Each client authenticates with a dedicated SSH key
-- Each client is restricted to its own repository path via forced commands
-- Cross-client access is enforced server-side and cannot be bypassed
-
-### SSH Hardening
-
-- Only modern, secure algorithms permitted (curve25519, chacha20-poly1305, aes256-gcm, hmac-sha2-512)
-- RSA and legacy algorithms are disabled
-- All interactive features disabled (TTY, TCP forwarding, X11, tunneling)
-- Login grace time limited to 15 seconds
-- Maximum 2 authentication attempts per connection
-- Maximum 5 concurrent sessions
-- Parallel connection attempts limited per source IP (MaxStartups, PerSourceMaxStartups)
-- SSH host keys are stored persistently in the config volume — host identity survives container restarts
-
-### Repository Enforcement
-
-- Append-only mode enforced server-side — clients cannot delete or modify existing archives
-- Unencrypted repositories are rejected at connection time
-- Each client is restricted to its own repository path — no cross-client access possible
-
-### Network Exposure
-
-- No web interface  
-- No HTTP API  
-- SSH is the only entry point
-
-### Isolation Model
-
-- Each client is assigned a separate user context  
-- Backup repositories are logically separated per client  
-- Cross-client access is not permitted
-
-### Immutable Storage (Append-Only Enforcement)
-
-borg-server enforces **append-only mode server-side** for all repositories.  
-
-Clients cannot disable or bypass this behavior.  
-Even in case of a compromised client, it is impossible to:
-
-- Modify existing backup archives  
-- Delete historical backup data  
-- Disable append-only protection
-
-This guarantees that all stored backups are **immutable once written**.
+## 🛡️ Security Model (Implementation Details)
 
 ### Threat Model
 
 The system assumes:
 
-- Clients may be compromised  
-- Network connections may be partially untrusted  
-- Only the server is trusted to enforce integrity rules
-
-Consequently:
-
-- All integrity guarantees are enforced server-side  
-- Clients are treated as untrusted input sources  
-- Backup history is treated as immutable storage
+- Client systems may be compromised
+- Backup sources are untrusted
+- Network connections may be intercepted or manipulated
+- The server is the only enforcement point for backup integrity rules
 
 ---
 
-## 💡 Security & Best Practices
+### Access Control
 
-borg-server enforces strict server-side security measures (see Security Model above).  
-However, secure operation also depends on proper configuration and operational practices by the administrator.
+- SSH key-based authentication only
+- Password authentication disabled
+- Root login disabled
+- Dedicated SSH key per client
+- Forced command execution prevents interactive shell access
+- Each client is restricted to its own repository path
+- Cross-client access is structurally impossible via configuration isolation
 
-⚠️ **Important:** Please review the [Best Practices Guide](BEST_PRACTICES.md) for recommendations on secure usage, including:
+---
 
-- Encrypting backups before mirroring  
-- Using tunneled connections for remote replication  
-- Exposing only the necessary SSH port  
-- Regular monitoring and verification of backups
+### SSH Hardening
+
+- Only modern cryptographic algorithms enabled
+- Legacy algorithms disabled
+- Interactive features disabled (TTY, X11, forwarding, tunneling)
+- Connection and authentication limits enforced
+- SSH host keys are persisted across restarts to maintain stable identity
+
+---
+
+### Repository Enforcement
+
+- Each client is mapped to an isolated repository path
+- Access is enforced server-side via forced commands
+- No direct filesystem-level access for clients
+- Cross-repository access is not permitted
+
+---
+
+### Append-Only Semantics
+
+The system enforces append-only behavior at the server layer.
+
+Clients cannot:
+
+- Modify existing backup archives
+- Delete historical backup data
+- Disable append-only enforcement
+
+Only new backup data can be appended.
+
+---
+
+### Network Exposure
+
+- No web interface
+- No HTTP API
+- SSH is the only external interface
+
+---
+
+## ⚠️ Deployment Requirements
+
+hardened-borg-server is **not a standalone secure system**.
+
+It is a security-enforcing component that MUST be deployed on a properly hardened host system.
+
+### Required baseline (see `BEST_PRACTICES.md`)
+
+Production deployments MUST follow all requirements defined in:
+
+👉 `BEST_PRACTICES.md`
+
+This includes:
+
+- Encryption at source for backups
+- Secure transport configuration (SSH, optional VPN tunneling)
+- Minimal network exposure (only SSH)
+- Regular integrity verification (borg check)
+- Restore testing procedures
+- Proper separation of repositories, logs, and configuration data
 
 ---
 
 ## 🧱 Architecture Overview
 
-- **Base system:** `debian:stable-slim` with `borgbackup` installed  
-  Minimal, well-maintained, predictable environment.
+- **Base image:** `debian:stable-slim` with BorgBackup installed  
+  Minimal and predictable runtime environment.
 
-- **Containerized deployment:** Podman/Docker + systemd integration  
-  Optional but recommended for reproducibility and isolation.
+- **Runtime:** Containerized (Podman or Docker recommended)  
+  Rootless execution strongly recommended for additional isolation.
 
-- **Volumes:** Separate mounts for repositories, logs, and configuration  
-  Ensures separation of concerns and easier hardening.
+- **Host integration:** systemd-compatible deployment supported
 
-- **Backup flows:**  
-  - Client → Server (local network or trusted connections)  
-  - Server → Server (mirror/offsite replication)
+- **Storage model:**
+  - Separate volumes for repositories
+  - Separate volumes for logs
+  - Separate volumes for configuration
+
+- **Backup flows:**
+  - Client → Server (SSH / optionally VPN protected)
+  - Server → Server (mirror / offsite replication)
 
 ---
 
-## 🛠 Deployment & Configuration
+## 🧠 Design Philosophy
 
-### Container Options
+hardened-borg-server follows a strict design philosophy:
 
-- `--name` – Container name  
-- `--rm` – Remove container after exit  
-- `--publish` – Port forwarding (e.g., `2222:22` for SSH)  
-- `--volume` – Volume mounts (config, repo, log)
+- minimize attack surface
+- avoid feature creep
+- enforce security server-side, not client-side
+- keep behavior deterministic and auditable
+- shift complexity to the host system, not the application layer
 
-### Example Command
+---
+
+## 🛠 Deployment Example
 
 ```bash
 podman run \
-  --name=borg-server \
+  --name=hardened-borg-server \
   --rm \
   --publish=2222:22 \
   --volume=$HOME/containers/borg-server/config:/config:Z \
   --volume=$HOME/containers/borg-server/repo:/repo:Z \
   --volume=$HOME/containers/borg-server/log:/log:Z \
-  ghcr.io/raykhoefemann/borg-server:0.1
-```
-
-### Configuration for Client Access
-This configuration allows borg-server to automatically map incoming backups to the correct repository while enforcing strict client isolation and access control. The scripts in the scripts directory can be used to create and populate these files automatically.
-
-#### clients.Config
-- **File:** `config/clients.conf`  
-- **Format:** `<client>:<group>:<repo>`  
-- **Example:**  
-```
-user1-os1-pc1:OWN:/repo/OWN/user1-os1-pc1
-user2-os1-pc1:OWN:/repo/OWN/user2-os1-pc1
-user-pc2:OWN:/repo/OWN/user-pc2
-friend1:MIRROR:/repo/MIRROR/friend1
-```
-
-#### SSH Keys
-
-- Each client has a dedicated public key stored in `config/keys/<client>.pub`  
-- The file name must match the client name  
-- **Example structure:**
-```
-config/keys/
-├── user1-os1-pc1.pub
-├── user2-os1-pc1.pub
-├── user-pc2.pub
-└── friend1.pub
-```
-
-#### Visual Overview
-clients.conf + keys/ ---> borg-server ---> Repositories (/repo/...)
-
+  ghcr.io/raykhoefemann/hardened-borg-server:0.1
