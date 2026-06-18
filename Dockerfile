@@ -61,7 +61,6 @@ Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
 MACs hmac-sha2-512-etm@openssh.com
 # --- Host Keys (persistent via volume) ---
 HostKey /config/ssh_host_keys/ssh_host_ed25519_key
-HostKey /config/ssh_host_keys/ssh_host_rsa_key
 # --- Logging / runtime ---
 PrintMotd no
 UsePAM no
