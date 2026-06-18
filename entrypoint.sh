@@ -5,29 +5,19 @@
 # Startup script for the Borg backup container.
 #
 # Tasks:
-#   - Generate SSH host keys (if not present)
-#   - Prepare the .ssh directory for the 'borg' user
-#   - Generate authorized_keys from /config/clients.conf
-#     (via /config/build_authorized_keys.sh)
-#   - Fix permissions
-#   - Start the SSH daemon
+# - Generate SSH host keys (if not present)
+# - Prepare the .ssh directory for the 'borg' user
+# - Generate authorized_keys from /config/clients.conf
+#   (via /build_authorized_keys.sh)
+# - Fix permissions
+# - Start the SSH daemon
 #
 
 set -euo pipefail
 
-if [ ! -d /log ]; then
-    echo "FATAL: /log not found. Mount a volume to /log, e.g. --volume=\$HOME/containers/borg-server/log:/log:Z" >&2
-    exit 1
-fi
-
-if [ ! -w /log ]; then
-    echo "FATAL: /log exists but is not writable by this container (check ownership/SELinux label)" >&2
-    exit 1
-fi
-
 LOG="/log/entrypoint.log"
 
-# Log Function
+# Log function
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG"
 }
@@ -37,18 +27,17 @@ log "Starting Borg server..."
 # ---------------------------------------------------------
 # Generate SSH host keys (if not already present)
 # ---------------------------------------------------------
-log "looking for SSH host keys..."
-# SSH Host Keys persistent halten
+log "Looking for SSH host keys..."
+
 HOST_KEY_DIR="/config/ssh_host_keys"
 mkdir -p "$HOST_KEY_DIR"
 chmod 700 "$HOST_KEY_DIR"
 
 if [ ! -f "$HOST_KEY_DIR/ssh_host_ed25519_key" ]; then
-    log "[INFO] Generating new SSH host keys..."
+    log "[INFO] Generating new SSH host key (ed25519)..."
     ssh-keygen -t ed25519 -f "$HOST_KEY_DIR/ssh_host_ed25519_key" -N ""
-    ssh-keygen -t rsa -b 4096 -f "$HOST_KEY_DIR/ssh_host_rsa_key" -N ""
 else
-    log "[INFO] Using existing SSH host keys."
+    log "[INFO] Using existing SSH host key."
 fi
 
 # ---------------------------------------------------------
@@ -62,16 +51,19 @@ chown borg:borg /home/borg/.ssh
 # ---------------------------------------------------------
 # Create authorized_keys
 # ---------------------------------------------------------
-if [ -f /build_authorized_keys.sh ]; then
-    log "Create authorized_keys from clients.conf..."
-    /build_authorized_keys.sh
-else
-    log "ERROR: /build_authorized_keys.sh not found! Aborting."
+if [ ! -f /build_authorized_keys.sh ]; then
+    log "[ERROR] /build_authorized_keys.sh not found! Aborting."
+    exit 1
+fi
+
+log "Creating authorized_keys from clients.conf..."
+if ! /build_authorized_keys.sh; then
+    log "[ERROR] build_authorized_keys.sh failed – aborting startup."
     exit 1
 fi
 
 # ---------------------------------------------------------
-# set owner of repo
+# Set owner of repo
 # ---------------------------------------------------------
 log "Checking owner of /repo..."
 if [ "$(stat -c '%U:%G' /repo)" != "borg:borg" ]; then
@@ -82,10 +74,7 @@ else
 fi
 
 # ---------------------------------------------------------
-# start SSH
+# Start SSH daemon
 # ---------------------------------------------------------
-log "Starting SSH-Daemon..."
+log "Starting SSH daemon..."
 exec /usr/sbin/sshd -D -e
-
-log "done."
-
