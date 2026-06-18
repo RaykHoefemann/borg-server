@@ -19,7 +19,6 @@ RUN apt-get update && apt-get install -y \
     borgbackup \
     openssh-server \
     && rm -rf /var/lib/apt/lists/*
-RUN apt-get autoremove -y
 
 # Prepare SSH
 RUN mkdir -p /var/run/sshd
