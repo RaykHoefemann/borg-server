@@ -23,7 +23,7 @@ This project enforces security at the application level:
 - Client isolation via configuration mapping
 - Minimal attack surface (SSH-only interface)
 
-## 2. Host Security Layer (OPERATOR RESPONSIBILITY)
+## 2. Host Security Layer (OPERATOR RESPONSIBILITY - also see best_practices.md)
 
 The host system is a **mandatory security boundary** and is explicitly outside the scope of this project.
 
