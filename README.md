@@ -109,7 +109,7 @@ Security is achieved only when BOTH layers are present:
 
 Neither layer is sufficient on its own.
 
-Also see best_practices.md to improve your security setup.
+See `BEST_PRACTICES.md` for the required operational baseline.
 
 ---
 
