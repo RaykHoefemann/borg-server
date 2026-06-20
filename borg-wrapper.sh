@@ -16,6 +16,7 @@ case "${SSH_ORIGINAL_COMMAND:-}" in
     info)
         if [ -f "$REPO/info.txt" ]; then
             cat "$REPO/info.txt"
+            du -sh "$REPO" | awk '{print $1 " used"}'
         else
             echo "no info available yet"
         fi
