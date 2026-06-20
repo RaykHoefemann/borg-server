@@ -46,5 +46,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.tag }}
-            ${{ steps.meta.outputs.stable == 'true' && format('ghcr.io/{0}:latest', github.repository) || '' }}
+            ghcr.io/raykhoefemann/hardened-borg-server:${{ steps.meta.outputs.tag }}
+            ${{ steps.meta.outputs.stable == 'true' && format('ghcr.io/raykhoefemann/hardened-borg-server:latest') || '' }}
