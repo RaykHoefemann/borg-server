@@ -3,16 +3,20 @@
 # build_authorized_keys.sh
 # ------------------------
 # create the file /home/borg/.ssh/authorized_keys based on:
-# /config/clients.conf (Format: name:group:repo)
-# /config/keys/<name>.pub (public ssh-key from user)
+#   /config/clients.conf (Format: name:group:repo:quota)
+#   /config/keys/<name>.pub (public ssh-key from user)
 #
-
+# Also generates <repo>/info.txt per client, containing server
+# contact info (from /config/server_info.conf) and client-specific
+# info (user, quota).
+#
 set -euo pipefail
 
 CONF="/config/clients.conf"
 KEYDIR="/config/keys"
 OUT="/home/borg/.ssh/authorized_keys"
 TMPOUT="${OUT}.tmp"
+SERVER_INFO="/config/server_info.conf"
 LOG="/log/build_authorized_keys.log"
 
 # Log Function
@@ -36,6 +40,34 @@ if [ ! -d "$(dirname "$OUT")" ]; then
     exit 1
 fi
 
+if [ ! -f "$SERVER_INFO" ]; then
+    log "[ERROR] Server info file $SERVER_INFO not found – aborting"
+    exit 1
+fi
+
+# ---------------------------------------------------------
+# Read server info (validated key=value pairs)
+# ---------------------------------------------------------
+SERVER_NAME=""
+SERVER_LOCATION=""
+SERVER_CONTACT=""
+
+while IFS="=" read -r key value; do
+    [ -z "$key" ] && continue
+    case "$key" in \#*) continue ;; esac
+    case "$key" in
+        name)     SERVER_NAME="$value" ;;
+        location) SERVER_LOCATION="$value" ;;
+        contact)  SERVER_CONTACT="$value" ;;
+        *)        log "[WARN] Unknown key in $SERVER_INFO: '$key' – ignoring" ;;
+    esac
+done < "$SERVER_INFO"
+
+if [ -z "$SERVER_NAME" ] || [ -z "$SERVER_LOCATION" ] || [ -z "$SERVER_CONTACT" ]; then
+    log "[ERROR] Server info incomplete (name/location/contact required) – aborting"
+    exit 1
+fi
+
 # Header (write to tempfile, not directly to $OUT)
 log "# Starting the build of authorized_keys..."
 echo "# Auto-generated authorized_keys" > "$TMPOUT"
@@ -45,9 +77,8 @@ echo "" >> "$TMPOUT"
 count=0
 
 # read each line from clients.conf
-while IFS=":" read -r name group repo; do
+while IFS=":" read -r name group repo quota; do
     [ -z "$name" ] && continue
-
     case "$name" in
         \#*) continue ;;
     esac
@@ -67,6 +98,12 @@ while IFS=":" read -r name group repo; do
     # Validate repo path (used in forced command)
     if ! echo "$repo" | grep -qE '^/[a-zA-Z0-9/_-]+$'; then
         log "[ERROR] Invalid repo path for '$name': '$repo' – skipping"
+        continue
+    fi
+
+    # Validate quota (mandatory, format: <digits>G, e.g. 50G)
+    if ! echo "$quota" | grep -qE '^[0-9]+G$'; then
+        log "[ERROR] Invalid or missing quota for '$name': '$quota' (expected format: <number>G) – skipping"
         continue
     fi
 
@@ -93,13 +130,31 @@ while IFS=":" read -r name group repo; do
     # Use only the first line – prevents multi-line key files
     # from injecting additional entries that bypass command= or restrict options
     key="$(head -n1 "$KEYFILE")"
-
     CMD="/borg-wrapper.sh $repo"
     echo "command=\"$CMD\",restrict $key" >> "$TMPOUT"
-
-    log "[INFO] Added key for '$name' with repo '$repo'"
+    log "[INFO] Added key for '$name' with repo '$repo' (quota: $quota)"
     count=$((count + 1))
 
+    # ---------------------------------------------------------
+    # Generate info.txt for this client
+    # ---------------------------------------------------------
+    mkdir -p "$repo"
+    INFO_FILE="${repo}/info.txt"
+
+    cat > "$INFO_FILE" <<EOF
+[server]
+name: ${SERVER_NAME}
+location: ${SERVER_LOCATION}
+contact: ${SERVER_CONTACT}
+
+[client]
+user: ${name}
+quota: ${quota}
+EOF
+
+    chown borg:borg "$INFO_FILE"
+    chmod 644 "$INFO_FILE"
+    log "[INFO] Generated info.txt for '$name'"
 done < "$CONF"
 
 # Abort if no keys were successfully added
@@ -115,7 +170,7 @@ mv "$TMPOUT" "$OUT"
 # set permissions
 chown borg:borg "$OUT"
 chmod 600 "$OUT"
-
 log "[INFO] Permissions set for $OUT"
 log "[INFO] $count key(s) written to authorized_keys"
+
 log "done"
