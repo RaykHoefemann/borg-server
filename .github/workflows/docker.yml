@@ -46,6 +46,7 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
+          annotation-level: index,manifest
           tags: |
             ghcr.io/raykhoefemann/hardened-borg-server:${{ steps.meta.outputs.tag }}
             ${{ steps.meta.outputs.stable == 'true' && format('ghcr.io/raykhoefemann/hardened-borg-server:latest') || '' }}
