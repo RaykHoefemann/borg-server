@@ -361,22 +361,6 @@ Sets (or overwrites, with confirmation) the public SSH key for an existing clien
 ./scripts/01-ssh-set-user-key.sh user1-os1-pc1 "ssh-ed25519 AAAA… user1-os1-pc1"
 ```
 
-## 02-ssh-set-user-quota.sh
-
-Changes the quota of an existing client without affecting its group or repository path.
-
-```bash
-./scripts/02-ssh-set-user-quota.sh <username> <quota>
-```
-
-**Example:**
-
-```bash
-./scripts/02-ssh-set-user-quota.sh user1-os1-pc1 100G
-```
-
-> After any change made via these scripts, restart the container so `build_authorized_keys.sh` regenerates `authorized_keys` and `info.txt` for all clients.
-
 ---
 
 ## 💡 Security & Best Practices
