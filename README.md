@@ -2,9 +2,11 @@
 
 **Security-hardened BorgBackup server for controlled multi-client environments**
 
-hardened-borg-server is a minimal, security-focused server wrapper around BorgBackup designed to receive backups from multiple clients in a strictly controlled environment.
+hardened-borg-server is a minimal, security‑focused server wrapper around BorgBackup designed to receive backups from multiple clients in a strictly controlled environment.
+It is built around two non‑negotiable principles: uncompromising security and uncompromising privacy.  
 
-It intentionally avoids feature complexity such as web interfaces, orchestration systems, or multi-purpose APIs in order to maintain a small, auditable, and predictable security surface.
+The system processes only the minimum information required for Borg operations, exposes no auxiliary interfaces, and isolates every client to prevent metadata leakage or cross‑visibility.
+It intentionally avoids feature complexity such as web interfaces, orchestration systems, or multi‑purpose APIs in order to maintain a small, auditable, privacy‑preserving, and predictable security surface.
 
 ---
 
