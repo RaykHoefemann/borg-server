@@ -179,6 +179,22 @@ All backup data is encrypted **on the client** before it is ever transmitted to 
 
 This is the central privacy guarantee of the system: **the server is, by design, structurally unable to see client data in plaintext.**
 
+### 2.1.1. Key Management & Loss of Access
+
+This privacy guarantee has a direct and unavoidable consequence: **if a client loses their encryption key/passphrase, the corresponding backups are permanently and irrecoverably lost.**
+
+- There is no recovery mechanism, master key, backdoor, or escrow at the server side — this is by design, not an oversight. Any such mechanism would itself be a way for the server (or an attacker who compromises it) to access client data, which would directly contradict the privacy guarantee in 2.1.
+- The server cannot reconstruct, derive, or recover a lost key under any circumstances. Repository data without the matching key is, and remains, unreadable ciphertext.
+- This places full responsibility for key custody on the **client**, not the server or its operator.
+
+**Operational consequence for clients:** every client must treat their Borg encryption key/passphrase with the same care as the data it protects — arguably more, since losing the key is equivalent to losing the backup entirely.
+
+Recommended practice for clients:
+
+- Keep a secure **offline backup of the encryption key/passphrase**, stored separately from the client machine itself (e.g. in a password manager with its own independent backup, a hardware security device, or a physically secured offline copy)
+- Never store the only copy of the key on the same machine that is being backed up — if that machine is lost, stolen, or destroyed, an on-device-only key is lost along with it
+- Treat key loss as equivalent in severity to total data loss when planning a backup strategy
+
 ## 2.2. Client Isolation & No Cross-Visibility
 
 - Each client is mapped to its own dedicated repository path (see 1.2.3)
@@ -393,3 +409,4 @@ However, secure operation also depends on proper configuration and operational p
 - Using tunneled connections for remote replication
 - Exposing only the necessary SSH port
 - Regular monitoring and verification of backups
+- Secure, offline backup of each client's encryption key/passphrase (see Chapter 2.1.1) — this is a client-side responsibility that the server cannot help with or recover from
